@@ -5,6 +5,14 @@ class SplashScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold();
+    return Scaffold(
+      body: Center(
+        child: Image.asset(
+          'assets/images/twitter_icon.png',
+
+          fit: BoxFit.cover,
+        ),
+      ),
+    );
   }
 }
