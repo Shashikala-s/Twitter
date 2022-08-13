@@ -1,15 +1,14 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:twitter/view/sign_up.dart';
 
-class SignIn extends StatefulWidget {
-  const SignIn({Key? key}) : super(key: key);
+class SignUp extends StatefulWidget {
+  const SignUp({Key? key}) : super(key: key);
 
   @override
-  _SignInState createState() => _SignInState();
+  _SignUpState createState() => _SignUpState();
 }
 
-class _SignInState extends State<SignIn> {
+class _SignUpState extends State<SignUp> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
@@ -45,7 +44,7 @@ class _SignInState extends State<SignIn> {
               children: [
                 ElevatedButton(
                   onPressed: () {
-                    _signIn();
+                    _signUp();
                   },
                   child: const Text('Sign in'),
                 ),ElevatedButton(
@@ -61,21 +60,15 @@ class _SignInState extends State<SignIn> {
       ),
     );
   }
-
-  void _signIn() async {
+  void _signUp() async {
 
     try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: emailController.text.trim(),
           password: passwordController.text.trim());
     }catch(e){
       print(e);
     }
-Navigator.pop(context);
-  }
-  @override
-  void dispose() {
- emailController.dispose();passwordController.dispose();
-    super.dispose();
+    Navigator.pop(context);
   }
 }
