@@ -7,15 +7,17 @@ void main()  async{
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
 
-  runApp(const MyApp());
+  runApp( MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
 
+   MyApp({Key? key}) : super(key: key);
+  final navigatorKey=GlobalKey<NavigatorState>();
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorKey: navigatorKey ,
       title: 'Twitter',
       theme: ThemeData(
            primarySwatch: Colors.blue,
