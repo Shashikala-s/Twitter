@@ -3,20 +3,24 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class TwitterFirebaseClient{
   CollectionReference users = FirebaseFirestore.instance.collection('tweeters');
 
-  Future<void> createTwitter( String description, String company, String date) {
-    return users
-        .add({
-      'description': description, // John Doe
-      'user': company, // Stokes and Sons
-      'date': date // 42
-    })
-        .then((value) => print("Twitter added"))
-        .catchError((error) => print("Failed to add user: $error"));
+  Future<void> createTwitter( String description, String company, String date) async {
+    try {
+     await  users
+          .add({
+        'description': description, // John Doe
+        'user': company, // Stokes and Sons
+        'date': date // 42
+      })
+          .then((value) => print("Twitter added"))
+          .catchError((error) => print("Failed to add user: $error"));
+    }catch(e){
+      print(e.toString());
+    }
   }
 
 
-  Future<void> editTwitter(String document , String description) {
-    return users
+  Future<void> editTwitter(String document , String description) async {
+    await users
         .doc(document)
         .update({'description': description})
         .then((value) => print("User Updated"))
