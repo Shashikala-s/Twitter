@@ -10,11 +10,12 @@ class TwitterBottomNavigation extends StatelessWidget {
     return BottomAppBar(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
+
         children: [
-          IconButton(icon: const Icon(Icons.home), onPressed: () {}),
-          IconButton(icon: const Icon(Icons.mic), onPressed: () {}),
-          IconButton(icon: const Icon(Icons.notifications_active), onPressed: () {}),
-          IconButton(icon: const Icon(Icons.mail), onPressed: () {}),
+          IconButton(icon:  Icon(Icons.home,color: Theme.of(context).primaryColor,size: 30,), onPressed: () {},),
+          IconButton(icon:  Icon(Icons.mic,color: Theme.of(context).disabledColor,size: 20,), onPressed: () {}),
+          IconButton(icon:  Icon(Icons.notifications_active,color: Theme.of(context).disabledColor,size: 20,), onPressed: () {}),
+          IconButton(icon:  Icon(Icons.mail,color: Theme.of(context).disabledColor,size: 20,), onPressed: () {}),
         ],
       ),
     );

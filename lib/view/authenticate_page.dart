@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:twitter/view/sign_up.dart';
-import 'package:twitter/view/signin.dart';
+import 'package:twitter/view/sign_in.dart';
 
 class AuthPage extends StatefulWidget {
   const AuthPage({Key? key}) : super(key: key);
@@ -10,7 +10,7 @@ class AuthPage extends StatefulWidget {
 }
 
 class _AuthPageState extends State<AuthPage> {
-  bool isLogin =true;
+  bool isLogin =false;
   @override
-  Widget build(BuildContext context) =>isLogin?SignIn():SignUp();
+  Widget build(BuildContext context) =>isLogin?SignIn():const SignUp();
 }

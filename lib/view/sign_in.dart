@@ -1,23 +1,23 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:twitter/services/twitter_firebase_client.dart';
-import 'package:twitter/view/sign_in.dart';
+import 'package:twitter/view/sign_up.dart';
 import 'package:twitter/widgets/twitter_app_bar.dart';
 
-class SignUp extends StatefulWidget {
-  const SignUp({Key? key}) : super(key: key);
+class SignIn extends StatefulWidget {
+  const SignIn({Key? key}) : super(key: key);
 
   @override
-  _SignUpState createState() => _SignUpState();
+  _SignInState createState() => _SignInState();
 }
 
-class _SignUpState extends State<SignUp> {
+class _SignInState extends State<SignIn> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: TwitterAppBar(context, 'A', false),
+      appBar: TwitterAppBar(context, '', false),
       body: Center(
         child: Padding(
           padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.04),
@@ -29,7 +29,7 @@ class _SignUpState extends State<SignUp> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
-                    "See what's \nhappening in the \nworld right now",
+                    "Welcome Back!",
                     textAlign: TextAlign.start,
                     style: Theme.of(context)
                         .textTheme
@@ -53,14 +53,14 @@ class _SignUpState extends State<SignUp> {
                       child: FloatingActionButton.extended(
                         elevation: 0,
                         onPressed: () {
-                          _signUp();
+                          _signIn();
                         },
                         icon: Icon(
                           Icons.account_circle_rounded,
                           color: Theme.of(context).backgroundColor,
                         ),
                         label: Text(
-                          'Create account'.toUpperCase(),
+                          'Sign In'.toUpperCase(),
                           style: Theme.of(context).textTheme.caption?.apply(
                               color: Theme.of(context).backgroundColor,
                               fontWeightDelta: 3),
@@ -75,7 +75,7 @@ class _SignUpState extends State<SignUp> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        "Already have an account?",
+                        "Don't have an account?",
                         textAlign: TextAlign.start,
                         style: Theme.of(context)
                             .textTheme
@@ -87,10 +87,10 @@ class _SignUpState extends State<SignUp> {
                       ),
                       GestureDetector(
                         onTap: () {
-                          _login();
+                          _sinUp();
                         },
                         child: Text(
-                          "SIGN IN".toUpperCase(),
+                          "SIGN UP".toUpperCase(),
                           textAlign: TextAlign.start,
                           style: Theme.of(context).textTheme.subtitle2?.apply(
                               color: Theme.of(context).primaryColor,
@@ -107,7 +107,6 @@ class _SignUpState extends State<SignUp> {
       ),
     );
   }
-
   Padding _signUpTextField(
       BuildContext context, TextEditingController controller, String hint, bool obscure) {
     return Padding(
@@ -146,30 +145,26 @@ class _SignUpState extends State<SignUp> {
     );
   }
 
-  void _signUp() async {
-    showDialog(
-        context: context,
-        builder: (context) => const Center(
-            child: CircularProgressIndicator()));
+  void _signIn() async {
+
     try {
-      TwitterFirebaseClient()
-          .createUser(emailController.text, passwordController.text,context);
-    } catch (e) {
-      print("It's here");
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: emailController.text.trim(),
+          password: passwordController.text.trim());
+    }catch(e){
       print(e);
     }
-    Navigator.pop(context);
+Navigator.pop(context);
   }
+  void _sinUp() async {
 
-  void _login() async {
     Navigator.of(context)
-        .push(MaterialPageRoute(builder: (context) => const SignIn()));
+        .push(MaterialPageRoute(builder: (context) => const SignUp()));
   }
 
   @override
   void dispose() {
-    emailController.dispose();
-    passwordController.dispose();
+ emailController.dispose();passwordController.dispose();
     super.dispose();
   }
 }

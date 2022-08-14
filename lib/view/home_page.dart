@@ -1,9 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../widgets/twitter_app_bar.dart';
 import '../widgets/twitter_bottom_navigation.dart';
+import '../widgets/twitter_bottom_sheet.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -12,22 +13,43 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final Stream<QuerySnapshot> _usersStream =
-  FirebaseFirestore.instance.collection('tweeters').snapshots();
+      FirebaseFirestore.instance.collection('tweeters').snapshots();
+  var user = FirebaseAuth.instance.currentUser;
 
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: TwitterBottomNavigation(),
-      appBar: TwitterAppBar(context,'hee'),
-      floatingActionButton: FloatingActionButton(onPressed: (){
-        _modalBottomSheetMenu();
+      backgroundColor: Colors.grey[100],
+      bottomNavigationBar: const TwitterBottomNavigation(),
+      appBar: TwitterAppBar(context, user?.email ?? 'A', true),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          showModalBottomSheet(
+              isScrollControlled: true,
+              context: context,
+              builder: (builder) {
+                return TwitterBottomSheet(
+                  context: context,
+                  user: user?.uid,
 
-      }, child: const Icon(Icons.add)),
+                );
+              });
+        },
+        child: const Icon(
+          Icons.add,
+          color: Colors.white,
+        ),
+      ),
       body: SafeArea(
         child: StreamBuilder<QuerySnapshot>(
           stream: _usersStream,
-          builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          builder:
+              (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
             if (snapshot.hasError) {
               return const Text('Something went wrong');
             }
@@ -39,19 +61,142 @@ class _HomePageState extends State<HomePage> {
             return ListView(
               children: snapshot.data!.docs
                   .map((DocumentSnapshot document) {
-                Map<String, dynamic> data =
-                document.data()! as Map<String, dynamic>;
-                return Padding(
-                  padding:  EdgeInsets.all(MediaQuery.of(context).size.height * 0.001),
-                  child: Card(
-                    elevation: 0,
-                    child: ListTile(
-                      title: Text(data['user']),
-                      subtitle: Text(data['description']),
-                    ),
-                  ),
-                );
-              })
+                    Map<String, dynamic> data =
+                        document.data()! as Map<String, dynamic>;
+                    return Padding(
+                      padding: EdgeInsets.all(
+                          MediaQuery.of(context).size.height * 0.001),
+                      child: Stack(
+                        children: [
+                          Card(
+
+                            color: Colors.white,
+                            elevation: 0,
+                            child: Padding(
+                              padding: EdgeInsets.all(
+                                  MediaQuery.of(context).size.height * 0.01),
+                              child: Column(
+                             crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Center(
+                                        child: CircleAvatar(
+                                          radius: MediaQuery.of(context).size.height *
+                                              0.02, // Image radius
+                                          backgroundImage: AssetImage(
+                                            'assets/images/person.jpeg',
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width:
+                                            MediaQuery.of(context).size.width * 0.02,
+                                      ),
+                                      Column(
+
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text(
+                                                data['user'].toString()=='null'?'':data['user'].toString(),
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .subtitle2
+                                                    ?.apply(fontWeightDelta: 3),
+                                              ),
+                                              SizedBox(
+                                                width:
+                                                MediaQuery.of(context).size.width * 0.02,
+                                              ),
+                                              Text(
+                                                data['date'].toString().split(' ')[0],
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .overline
+                                                    ?.apply(fontWeightDelta: 0),
+                                              ),
+
+                                            ],
+                                          ),
+                                          SizedBox(
+                                            width: MediaQuery.of(context).size.width *
+                                                0.8,
+                                            child: Text(data['description'],textAlign: TextAlign.start),
+
+                                          ),
+
+                                        ],
+                                      ),
+                                      SizedBox(
+                                        height:
+                                        MediaQuery.of(context).size.width * 0.02,
+                                      ),
+
+
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    height:
+                                    MediaQuery.of(context).size.width * 0.02,
+                                  ),
+
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                    children: [
+                                      const Icon(Icons.chat_bubble_outline),
+                                      const Icon(Icons.repeat_rounded),
+                                      const Icon(Icons.favorite),
+                                      const Icon(Icons.share),
+
+                                    ],)
+                                ],
+                              ),
+                            ),
+                          ),
+                          Positioned(
+                            top: 0.0,
+                            right: 0.0,
+                            child: Visibility(
+                                visible: user?.uid==data['user'],
+                                child: Container(
+                                  width: 28,
+                                  height: 28,
+                                  decoration: BoxDecoration(
+                                    color: Theme.of(context).primaryColor, // border color
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Padding(
+                                    padding: EdgeInsets.all(2), // border width
+                                    child: Container( // or ClipRRect if you need to clip the content
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: Theme.of(context).primaryColor, // inner circle color
+                                      ),
+                                      child: GestureDetector(
+                                        onTap: (){
+                                          showModalBottomSheet(
+                                              isScrollControlled: true,
+                                              context: context,
+                                              builder: (builder) {
+                                                return TwitterBottomSheet(
+                                                  context: context,
+                                                  user: user?.uid,
+                                                  data:data
+                                                );
+                                              });
+                                        },
+                                          child: Icon(Icons.edit,color: Colors.white,size: 18,)) // inner content
+                                    ),
+                                  ),
+                                ),),
+                          )
+                        ],
+                      ),
+                    );
+                  })
                   .toList()
                   .cast(),
             );
@@ -60,27 +205,4 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
-  void _modalBottomSheetMenu(){
-    showModalBottomSheet(
-        isScrollControlled:true,
-        context: context,
-        builder: (builder){
-          return  Container(
-            height: MediaQuery.of(context).size.height*1,
-            color: Colors.transparent, //could change this to Color(0xFF737373),
-            child:  Container(
-                decoration:  const BoxDecoration(
-                    color: Colors.white,
-                    borderRadius:  BorderRadius.only(
-                        topLeft:  Radius.circular(10.0),
-                        topRight:  Radius.circular(10.0))),
-                child: const Center(
-                  child:  Text("This is a modal sheet"),
-                )),
-          );
-        }
-    );
-  }
 }
-
-
