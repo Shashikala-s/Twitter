@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:twitter/services/twitter_firebase_client.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({Key? key}) : super(key: key);
@@ -47,14 +48,21 @@ class _SignUpState extends State<SignUp> {
                     _signUp();
                   },
                   child: const Text('Sign in'),
-                ),ElevatedButton(
+                ),
+                ElevatedButton(
                   onPressed: () {
                     Navigator.of(context).push(MaterialPageRoute(builder: (context) => const SignUp()));
                   },
                   child: const Text('Sign up'),
                 ),
               ],
-            )
+            ),
+            ElevatedButton(
+              onPressed: () {
+                TwitterFirebaseClient().createTwitter('description', 'company', 'date');
+              },
+              child: const Text('Create'),
+            ),
           ],
         ),
       ),

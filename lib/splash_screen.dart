@@ -41,7 +41,7 @@ class _SplashScreenState extends State<SplashScreen> {
   void navigateToNext() {
     Future.delayed(const Duration(seconds: 3), () {
       Navigator.of(context)
-          .push(MaterialPageRoute(builder: (context) => const HomePage()));
+          .push(MaterialPageRoute(builder: (context) =>  HomePage()));
     });
   }
 
