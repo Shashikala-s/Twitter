@@ -153,4 +153,9 @@ class _TwitterBottomSheetState extends State<TwitterBottomSheet> {
       ),
     );
   }
+  @override
+  void dispose() {
+    newTwitterDescription.dispose();
+    super.dispose();
+  }
 }

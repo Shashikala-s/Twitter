@@ -17,8 +17,7 @@ class _SignInState extends State<SignIn> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: TwitterAppBar(context, '', false),
-      body: Center(
+       body: Center(
         child: Padding(
           padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.04),
           child: SingleChildScrollView(
