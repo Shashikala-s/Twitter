@@ -80,6 +80,7 @@ class _TwitterBottomSheetState extends State<TwitterBottomSheet> {
                           MediaQuery.of(context).size.height * 0.01),
                       child: TextField(
                           maxLines: 10,
+
                           inputFormatters: [
                             LengthLimitingTextInputFormatter(280),
                           ],
@@ -90,17 +91,21 @@ class _TwitterBottomSheetState extends State<TwitterBottomSheet> {
                           controller: newTwitterDescription,
                           onChanged: (String newVal) {
                             setState(() {
-                              if (newVal.length < 281) {
-                                maxLength = maxLength - newVal.length;
-                              } else {
-                                print('nooo');
+                              if (newVal.length <=280) {
+                                maxLength=0;
+                                maxLength =   newVal.length;
                               }
                             });
                           }),
                     ),
                   ),
-                  Text(
-                    maxLength.toString(),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Text(
+                      maxLength.toString()+"/280",style: Theme.of(context).textTheme.caption,
+                      ),
+                    ],
                   ),
                   SizedBox(
                     height: MediaQuery.of(context).size.height * 0.02,

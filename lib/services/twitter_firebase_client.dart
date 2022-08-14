@@ -4,13 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:twitter/widgets/twitter_scaffold_messenger.dart';
 
 class TwitterFirebaseClient {
-  CollectionReference users = FirebaseFirestore.instance.collection('tweeters');
+  CollectionReference twitter = FirebaseFirestore.instance.collection('tweeters');
 
   Future<void> createTwitter(
       String description, String user, String date,BuildContext context,String userid) async {
     try {
       if(description.isNotEmpty && user.isNotEmpty && date.isNotEmpty){
-        await users
+        await twitter
             .add({
           'description': description, // John Doe
           'user': user, // Stokes and Sons
@@ -34,7 +34,7 @@ class TwitterFirebaseClient {
   Future<void> editTwitter(String document, String description,BuildContext context) async {
     if(description.isNotEmpty && document.isNotEmpty) {
       try {
-        await users
+        await twitter
             .doc(document)
             .update({'description': description})
             .then((value) {
@@ -50,15 +50,26 @@ class TwitterFirebaseClient {
     }
   }
 
-  Future<void> getTwitter() async {
-    final docSnap = await users.get();
-    final city = docSnap.docs; // Convert to City object
-    if (city.isNotEmpty) {
-      print(city[0]);
-    } else {
-      print("No such document.");
+  Future<void> deleteTwitter(String document,BuildContext context) async {
+    if( document.isNotEmpty) {
+      try {
+        await twitter
+            .doc(document)
+            .delete()
+            .then((value) {
+          Navigator.pop(context);
+          TwitterScaffoldMessenger().successMsg(context, 'Deleted');
+        })
+            .catchError((error) {
+          TwitterScaffoldMessenger().errorMsg(context, error.toString());
+        });
+      }catch(e){
+        TwitterScaffoldMessenger().errorMsg(context, e.toString());
+      }
     }
   }
+
+
 
   Future<dynamic> createUser(String email, String password,BuildContext context) async {
     try {
@@ -74,4 +85,6 @@ class TwitterFirebaseClient {
       TwitterScaffoldMessenger().errorMsg(context, e.toString());
     }
   }
+
+
 }

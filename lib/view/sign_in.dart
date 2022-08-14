@@ -24,7 +24,7 @@ class _SignInState extends State<SignIn> {
           child: SingleChildScrollView(
             scrollDirection: Axis.vertical,
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -32,8 +32,8 @@ class _SignInState extends State<SignIn> {
                     Image(
                       fit: BoxFit.contain,
                       alignment: Alignment.center,
-                      height: MediaQuery.of(context).size.height * 0.06,
-                      width: MediaQuery.of(context).size.width * 0.3,
+                      height: MediaQuery.of(context).size.height * 0.08,
+                      width: MediaQuery.of(context).size.width * 0.4,
                       image: const AssetImage('assets/images/twitter_icon.png'),
                     ),
                   ],
@@ -46,7 +46,7 @@ class _SignInState extends State<SignIn> {
                       EdgeInsets.all(MediaQuery.of(context).size.width * 0.04),
                   child: Text(
                     "Welcome Back!",
-                    textAlign: TextAlign.start,
+                    textAlign: TextAlign.center,
                     style: Theme.of(context)
                         .textTheme
                         .headline4

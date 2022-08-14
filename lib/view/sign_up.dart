@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:twitter/services/twitter_firebase_client.dart';
+import 'package:twitter/utils/twitter_validation.dart';
 import 'package:twitter/view/sign_in.dart';
 import 'package:twitter/widgets/twitter_app_bar.dart';
 import 'package:twitter/widgets/twitter_scaffold_messenger.dart';
@@ -33,8 +34,8 @@ class _SignUpState extends State<SignUp> {
                     Image(
                       fit: BoxFit.contain,
                       alignment: Alignment.center,
-                      height: MediaQuery.of(context).size.height * 0.06,
-                      width: MediaQuery.of(context).size.width * 0.3,
+                      height: MediaQuery.of(context).size.height * 0.08,
+                      width: MediaQuery.of(context).size.width * 0.4,
                       image: const AssetImage('assets/images/twitter_icon.png'),
                     ),
                   ],
@@ -129,32 +130,49 @@ class _SignUpState extends State<SignUp> {
     return Padding(
       padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.01),
       child: Container(
-          decoration: BoxDecoration(
-            border: Border.all(width: 0.1),
-            borderRadius: BorderRadius.circular(25),
-            color: Theme.of(context).backgroundColor,
-          ),
+
           child: Row(
             children: <Widget>[
               Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                  child: TextField(
-                    obscureText: obscure,
-                    decoration: InputDecoration(
-                        border: InputBorder.none,
-                        hintText: hint,
-                        hintStyle: Theme.of(context).textTheme.overline),
-                    controller: controller,
-                    textCapitalization: TextCapitalization.none,
-                    textAlign: TextAlign.start,
-                    onChanged: (var len) {
-                      setState(() {
-                        setState(() {});
-                        // _productFilter(len);
-                      });
-                    },
-                  ),
+                child: TextFormField(
+
+                  obscureText: obscure,
+                  decoration: InputDecoration(
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(25.0),
+                        borderSide: const BorderSide(color: Colors.grey, width: 1.0),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(25.0),
+                          borderSide: BorderSide(
+                            color: Colors.grey[300]!,
+                            width: 1.0,
+                          ),),
+                      focusedErrorBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(25.0),
+                        borderSide: BorderSide(
+                          color: Colors.red[100]!,
+                          width: 1.0,
+                        ),),
+                      errorBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(25.0),
+                        borderSide: BorderSide(
+                          color: Colors.red[100]!,
+                          width: 1.0,
+                        ),),
+                      hintText: hint,
+                      hintStyle: Theme.of(context).textTheme.overline),
+                  controller: controller,
+                  textCapitalization: TextCapitalization.none,
+                  textAlign: TextAlign.start,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    validator: (v) {
+                    if(!obscure) {
+                      if (v!.isValidEmail) {} else {
+                        return 'Please enter a valid email';
+                      }
+                    }
+                    }
                 ),
               ),
             ],

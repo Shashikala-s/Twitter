@@ -13,7 +13,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final Stream<QuerySnapshot> _usersStream =
-      FirebaseFirestore.instance.collection('tweeters').snapshots();
+      FirebaseFirestore.instance.collection('tweeters').orderBy('date',descending: true).snapshots();
   var user = FirebaseAuth.instance.currentUser;
 
   @override
@@ -50,6 +50,7 @@ class _HomePageState extends State<HomePage> {
       body: SafeArea(
         child: StreamBuilder<QuerySnapshot>(
           stream: _usersStream,
+
           builder:
               (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
             if (snapshot.hasError) {
@@ -70,9 +71,7 @@ class _HomePageState extends State<HomePage> {
                           MediaQuery.of(context).size.height * 0.001),
                       child: Stack(
                         children: [
-
                           Card(
-
                             color: Colors.white,
                             elevation: 0,
                             child: Padding(
@@ -87,7 +86,7 @@ class _HomePageState extends State<HomePage> {
                                         child: CircleAvatar(
                                           radius: MediaQuery.of(context).size.height *
                                               0.02, // Image radius
-                                          backgroundImage: AssetImage(
+                                          backgroundImage: const AssetImage(
                                             'assets/images/person.jpeg',
                                           ),
                                         ),
@@ -115,7 +114,7 @@ class _HomePageState extends State<HomePage> {
                                                 MediaQuery.of(context).size.width * 0.02,
                                               ),
                                               Text(
-                                                data['date'].toString().split(' ')[0],
+                                                data['date'].toString().split('.')[0],
                                                 style: Theme.of(context)
                                                     .textTheme
                                                     .overline
@@ -143,7 +142,7 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                   SizedBox(
                                     height:
-                                    MediaQuery.of(context).size.width * 0.02,
+                                    MediaQuery.of(context).size.width * 0.04,
                                   ),
 
                                   Row(
@@ -159,45 +158,7 @@ class _HomePageState extends State<HomePage> {
                               ),
                             ),
                           ),
-                          Positioned(
-                            bottom: 0.0,
-                            right: 0.0,
-                            child: Visibility(
-                                visible: user?.uid==data['userid'],
-                                child: Container(
-                                  width: 28,
-                                  height: 28,
-                                  decoration: BoxDecoration(
-                                    color: Theme.of(context).primaryColor, // border color
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: Padding(
-                                    padding: EdgeInsets.all(2), // border width
-                                    child: Container( // or ClipRRect if you need to clip the content
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: Theme.of(context).primaryColor, // inner circle color
-                                      ),
-                                      child: GestureDetector(
-                                        onTap: (){
-                                          showModalBottomSheet(
-                                              isScrollControlled: true,
-                                              context: context,
-                                              builder: (builder) {
-                                                return TwitterBottomSheet(
-                                                  context: context,
-                                                    user: user?.email?.split('@')[0],
-                                                    userid: user?.uid,
-                                                  data:data,
-                                                  document:document
-                                                );
-                                              });
-                                        },
-                                          child: const Icon(Icons.edit,color: Colors.white,size: 18,)) // inner content
-                                    ),
-                                  ),
-                                ),),
-                          )
+
                         ],
                       ),
                     );

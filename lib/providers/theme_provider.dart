@@ -21,7 +21,7 @@ class MyTheme {
       primaryColor: Colors.lightBlue,
       buttonTheme: ButtonThemeData(buttonColor: Colors.grey[100]),
       iconTheme: IconThemeData(
-        color: Colors.grey[300],
+        color: Colors.grey[400],
       ),
 
       backgroundColor: Colors.white,
