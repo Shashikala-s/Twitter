@@ -2,7 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
-import 'package:twitter/providers/ThemeProvider.dart';
+import 'package:twitter/providers/theme_provider.dart';
 import 'package:twitter/splash_screen.dart';
 import 'package:twitter/view/home_page.dart';
 
@@ -30,8 +30,8 @@ class MyApp extends StatelessWidget {
        return MaterialApp(
          theme: MyTheme.lightTheme,
          title: 'Twitter',
-         home:  HomePage(),
-         // home: const SplashScreen(),
+         // home:  HomePage(),
+         home: const SplashScreen(),
          debugShowCheckedModeBanner: false,
        );
      },

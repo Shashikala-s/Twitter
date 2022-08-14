@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:twitter/services/twitter_firebase_client.dart';
 import 'package:twitter/view/sign_in.dart';
 import 'package:twitter/widgets/twitter_app_bar.dart';
+import 'package:twitter/widgets/twitter_scaffold_messenger.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({Key? key}) : super(key: key);
@@ -17,7 +18,7 @@ class _SignUpState extends State<SignUp> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: TwitterAppBar(context, 'A', false),
+      // appBar: TwitterAppBar(context, 'A', false),
       body: Center(
         child: Padding(
           padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.04),
@@ -26,6 +27,21 @@ class _SignUpState extends State<SignUp> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image(
+                      fit: BoxFit.contain,
+                      alignment: Alignment.center,
+                      height: MediaQuery.of(context).size.height * 0.06,
+                      width: MediaQuery.of(context).size.width * 0.3,
+                      image: const AssetImage('assets/images/twitter_icon.png'),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: MediaQuery.of(context).size.width * 0.1,
+                ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
@@ -150,15 +166,15 @@ class _SignUpState extends State<SignUp> {
     showDialog(
         context: context,
         builder: (context) => const Center(
-            child: CircularProgressIndicator()));
+            child: CircularProgressIndicator(color: Colors.lightBlueAccent,)));
     try {
       TwitterFirebaseClient()
           .createUser(emailController.text, passwordController.text,context);
     } catch (e) {
-      print("It's here");
-      print(e);
+     TwitterScaffoldMessenger().errorMsg(context, e.toString());
     }
     Navigator.pop(context);
+
   }
 
   void _login() async {

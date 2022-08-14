@@ -18,6 +18,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
+
     super.initState();
   }
 
@@ -35,7 +36,8 @@ class _HomePageState extends State<HomePage> {
               builder: (builder) {
                 return TwitterBottomSheet(
                   context: context,
-                  user: user?.uid,
+                  user: user?.email?.split('@')[0],
+                  userid: user?.uid,
 
                 );
               });
@@ -58,7 +60,7 @@ class _HomePageState extends State<HomePage> {
               return const Text("Loading");
             }
 
-            return ListView(
+            return (snapshot.data!.docs.isNotEmpty)?ListView(
               children: snapshot.data!.docs
                   .map((DocumentSnapshot document) {
                     Map<String, dynamic> data =
@@ -68,6 +70,7 @@ class _HomePageState extends State<HomePage> {
                           MediaQuery.of(context).size.height * 0.001),
                       child: Stack(
                         children: [
+
                           Card(
 
                             color: Colors.white,
@@ -145,11 +148,11 @@ class _HomePageState extends State<HomePage> {
 
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                    children: [
-                                      const Icon(Icons.chat_bubble_outline),
-                                      const Icon(Icons.repeat_rounded),
-                                      const Icon(Icons.favorite),
-                                      const Icon(Icons.share),
+                                    children: const [
+                                      Icon(Icons.chat_bubble_outline),
+                                      Icon(Icons.repeat_rounded),
+                                      Icon(Icons.favorite),
+                                      Icon(Icons.share),
 
                                     ],)
                                 ],
@@ -157,10 +160,10 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ),
                           Positioned(
-                            top: 0.0,
+                            bottom: 0.0,
                             right: 0.0,
                             child: Visibility(
-                                visible: user?.uid==data['user'],
+                                visible: user?.uid==data['userid'],
                                 child: Container(
                                   width: 28,
                                   height: 28,
@@ -183,12 +186,14 @@ class _HomePageState extends State<HomePage> {
                                               builder: (builder) {
                                                 return TwitterBottomSheet(
                                                   context: context,
-                                                  user: user?.uid,
-                                                  data:data
+                                                    user: user?.email?.split('@')[0],
+                                                    userid: user?.uid,
+                                                  data:data,
+                                                  document:document
                                                 );
                                               });
                                         },
-                                          child: Icon(Icons.edit,color: Colors.white,size: 18,)) // inner content
+                                          child: const Icon(Icons.edit,color: Colors.white,size: 18,)) // inner content
                                     ),
                                   ),
                                 ),),
@@ -199,7 +204,7 @@ class _HomePageState extends State<HomePage> {
                   })
                   .toList()
                   .cast(),
-            );
+            ):const Center(child: Text("Let's start journey.."),);
           },
         ),
       ),

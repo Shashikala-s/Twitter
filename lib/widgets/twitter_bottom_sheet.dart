@@ -1,17 +1,22 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:twitter/services/twitter_firebase_client.dart';
 
 class TwitterBottomSheet extends StatefulWidget {
-  final String?  user;
-  final Map<String,dynamic>? data;
+  final String? user;
+  final String? userid;
+  final Map<String, dynamic>? data;
+  final DocumentSnapshot? document;
 
-  const TwitterBottomSheet({
-    Key? key,
-    required this.context,
-    required this.user,  this.data,
-
-  }) : super(key: key);
+  const TwitterBottomSheet(
+      {Key? key,
+      required this.context,
+      required this.user,
+      this.data,
+      this.userid,
+      this.document})
+      : super(key: key);
 
   final BuildContext context;
 
@@ -20,14 +25,19 @@ class TwitterBottomSheet extends StatefulWidget {
 }
 
 class _TwitterBottomSheetState extends State<TwitterBottomSheet> {
-  final newTwitterDescription=TextEditingController();
+  final newTwitterDescription = TextEditingController();
+  String text = ""; // empty string to carry what was there before it
+
+  int maxLength = 280;
+
   @override
   void initState() {
-    if(widget.data!=null){
-     newTwitterDescription.text=widget.data?['description'];
+    if (widget.data != null) {
+      newTwitterDescription.text = widget.data?['description'];
     }
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -40,52 +50,96 @@ class _TwitterBottomSheetState extends State<TwitterBottomSheet> {
                     topLeft: Radius.circular(10.0),
                     topRight: Radius.circular(10.0))),
             child: Padding(
-              padding:  EdgeInsets.all(MediaQuery.of(context).size.height * 0.01),
-
+              padding:
+                  EdgeInsets.all(MediaQuery.of(context).size.height * 0.01),
               child: Column(
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
-                    children: [Icon(Icons.arrow_back)],
-                  ),
-                  Container(
-                    alignment: Alignment.topRight,
-                    height:MediaQuery.of(context).size.height * 0.2 ,
-                    child: Center(
-                      child: TextFormField(
-                        controller: newTwitterDescription,
-                        inputFormatters: [
-                           LengthLimitingTextInputFormatter(280),
-                        ],
-                        autofocus: true,
-                        maxLines: 10,
-                        textInputAction: TextInputAction.go,
-                        keyboardType: TextInputType.multiline,
-                        enabled: true,
-                        textAlign: TextAlign.start,
-                        decoration: const InputDecoration(
-                          border: InputBorder.none,
-                          hintText: "what's hapenning?",
-                        ),
-                      ),
-                    ),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      Text('Max 280'),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.pop(context);
+                        },
+                        child: Icon(
+                          Icons.arrow_back,
+                          color: Theme.of(context).disabledColor,
+                        ),
+                      )
                     ],
                   ),
+                  Container(
+                    decoration: BoxDecoration(
+                        color: Colors.grey[200],
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(20.0))),
+                    alignment: Alignment.topRight,
+                    height: MediaQuery.of(context).size.height * 0.3,
+                    child: Padding(
+                      padding: EdgeInsets.all(
+                          MediaQuery.of(context).size.height * 0.01),
+                      child: TextField(
+                          maxLines: 10,
+                          inputFormatters: [
+                            LengthLimitingTextInputFormatter(280),
+                          ],
+                          decoration: InputDecoration(
+                              border: InputBorder.none,
+                              hintText: "What's happening ?",
+                              hintStyle: Theme.of(context).textTheme.overline!),
+                          controller: newTwitterDescription,
+                          onChanged: (String newVal) {
+                            setState(() {
+                              if (newVal.length < 281) {
+                                maxLength = maxLength - newVal.length;
+                              } else {
+                                print('nooo');
+                              }
+                            });
+                          }),
+                    ),
+                  ),
+                  Text(
+                    maxLength.toString(),
+                  ),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.02,
+                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      ElevatedButton(
+                      FloatingActionButton.extended(
+                        elevation: 0,
                         onPressed: () {
+                          if (widget.document?.id!=null) {
+                            //update
+                            TwitterFirebaseClient().editTwitter(
+                              widget.document?.id??'',
+                              newTwitterDescription.text,
+                              context,
 
-                          TwitterFirebaseClient().createTwitter(newTwitterDescription.text, widget.user, DateTime.now().toString());
+                            );
+                          } else {
+                            TwitterFirebaseClient().createTwitter(
+                              newTwitterDescription.text,
+                              widget.user ?? '',
+                              DateTime.now().toString(),
+                              context,
+                              widget.userid ?? '',
+                            );
+                          }
                         },
-                        child: const Text('Tweet'),
-                      ),
+                        icon: Icon(
+                          Icons.post_add,
+                          color: Theme.of(context).backgroundColor,
+                        ),
+                        label: Text(
+                          'Tweet'.toUpperCase(),
+                          style: Theme.of(context).textTheme.caption?.apply(
+                              color: Theme.of(context).backgroundColor,
+                              fontWeightDelta: 3),
+                        ),
+                      )
                     ],
                   ),
                 ],

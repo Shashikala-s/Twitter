@@ -52,7 +52,7 @@ class TwitterScaffoldMessenger {
   void successMsg(BuildContext context, String e) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       duration: const Duration(seconds: 3),
-      backgroundColor: Colors.green[400],
+      backgroundColor: Colors.lightBlue[400],
       content: Text(
         e,
         style:
